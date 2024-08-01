@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
+import UpdatePostForm from "./UpdatePostForm";
 
 export default function PostDetails() {
   const { id } = useParams();
@@ -47,10 +48,11 @@ export default function PostDetails() {
       <Button mb={5} onClick={() => navigate(-1)}>
         Back to Posts
       </Button>
-      <Box p={5} borderWidth="1px" borderRadius="lg">
+      <Box mb={5} p={5} borderWidth="1px" borderRadius="lg">
         <Heading mb={5}>{post.title}</Heading>
         <Text>{post.body}</Text>
       </Box>
+      <UpdatePostForm />
     </Box>
   );
 }

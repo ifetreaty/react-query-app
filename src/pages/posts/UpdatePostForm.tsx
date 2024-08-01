@@ -12,7 +12,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 
-export default function EditPostForm() {
+export default function UpdatePostForm() {
   const { id } = useParams();
   const toast = useToast();
   const { data: post, isLoading } = useQuery({

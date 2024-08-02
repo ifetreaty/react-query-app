@@ -1,12 +1,36 @@
 import { Box, Heading, Text, Stack, VStack, Spinner } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 
+type User = {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+  phone: string;
+  website: string;
+  address: {
+    street: string;
+    suite: string;
+    city: string;
+    zipcode: string;
+    geo: {
+      lat: string;
+      lng: string;
+    };
+  };
+  company: {
+    name: string;
+    catchPhrase: string;
+    bs: string;
+  };
+};
+
 export default function UsersList() {
   const {
     data: userData,
     error,
     isLoading,
-  } = useQuery({
+  } = useQuery<User[]>({
     queryKey: ["users"],
     queryFn: () =>
       fetch("https://jsonplaceholder.typicode.com/users").then((response) =>
@@ -34,7 +58,7 @@ export default function UsersList() {
     <Box p={5}>
       <Heading mb={5}>Users List</Heading>
       <VStack spacing={5}>
-        {userData.map((user) => (
+        {userData?.map((user) => (
           <Box
             key={user.id}
             p={5}

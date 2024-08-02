@@ -11,28 +11,42 @@ import {
   Button,
   useToast,
 } from "@chakra-ui/react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { Link as RouterLink } from "react-router-dom";
 
+type Post = {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
+};
+
+type NewPost = {
+  title: string;
+  body: string;
+  userId?: number;
+};
+
 export default function PostsList() {
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
   const toast = useToast();
 
   const {
     data: posts,
     error,
     isLoading,
-  } = useQuery({
+  } = useQuery<Post[]>({
     queryKey: ["posts"],
     queryFn: () =>
       fetch(`https://jsonplaceholder.typicode.com/posts`).then((res) =>
         res.json()
       ),
+    refetchInterval: 60000,
   });
 
-  const { mutate: addPost, isPending } = useMutation({
-    mutationFn: (newPost) =>
+  const { mutate: addPost, isPending: isPending } = useMutation({
+    mutationFn: (newPost: NewPost) =>
       fetch("https://jsonplaceholder.typicode.com/posts", {
         method: "POST",
         body: JSON.stringify(newPost),
@@ -44,7 +58,6 @@ export default function PostsList() {
       // queryClient.invalidateQueries(["posts"]);
       toast({
         title: "Post added.",
-        position: "top-right",
         description: "Your post has been added successfully.",
         status: "success",
         duration: 5000,
@@ -54,7 +67,6 @@ export default function PostsList() {
     onError: () => {
       toast({
         title: "Error.",
-        position: "top-right",
         description: "There was an error adding your post.",
         status: "error",
         duration: 5000,
@@ -63,8 +75,8 @@ export default function PostsList() {
     },
   });
 
-  const { mutate: deletePost, isLoading: isDeleting } = useMutation({
-    mutationFn: (postId) =>
+  const { mutate: deletePost, isPending: isDeleting } = useMutation({
+    mutationFn: (postId: number) =>
       fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`, {
         method: "DELETE",
       }).then((response) => response.json()),
@@ -72,7 +84,6 @@ export default function PostsList() {
       // queryClient.invalidateQueries(["posts"]);
       toast({
         title: "Post deleted.",
-        position: "top-right",
         description: "The post has been deleted successfully.",
         status: "success",
         duration: 5000,
@@ -82,7 +93,6 @@ export default function PostsList() {
     onError: () => {
       toast({
         title: "Error.",
-        position: "top-right",
         description: "There was an error deleting the post.",
         status: "error",
         duration: 5000,
@@ -91,9 +101,9 @@ export default function PostsList() {
     },
   });
 
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset } = useForm<NewPost>();
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: NewPost) => {
     addPost(data);
     reset();
   };
@@ -146,7 +156,7 @@ export default function PostsList() {
         View All Posts
       </Text>
       <VStack spacing={4} align="stretch">
-        {posts.map((post) => (
+        {posts?.map((post) => (
           <Box key={post.id} borderWidth="1px" borderRadius="lg" p={4}>
             <Heading size="md">
               <RouterLink to={`/posts/${post.id}`}>{post.title}</RouterLink>
@@ -154,11 +164,20 @@ export default function PostsList() {
             <Text>{post.body}</Text>
             <Button
               mt={4}
+              mr={4}
               colorScheme="gray"
               isLoading={isDeleting}
               onClick={() => deletePost(post.id)}
             >
               Delete Post
+            </Button>
+            <Button
+              mt={4}
+              colorScheme="teal"
+              as={RouterLink}
+              to={`/posts/${post.id}/comments`}
+            >
+              View Comments
             </Button>
           </Box>
         ))}

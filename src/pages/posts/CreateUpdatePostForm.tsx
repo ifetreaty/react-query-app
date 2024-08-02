@@ -9,13 +9,23 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 
-export default function UpdatePostForm() {
-  const { id } = useParams();
+type Post = {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
+};
+
+export default function CreateUpdatePostForm() {
+  const { id } = useParams<{ id: string }>();
   const toast = useToast();
-  const { data: post, isLoading } = useQuery({
+  // const queryClient = useQueryClient();
+
+  const { data: post, isLoading } = useQuery<Post>({
     queryKey: ["post", id],
     queryFn: () =>
       fetch(`https://jsonplaceholder.typicode.com/posts/${id}`).then((res) =>
@@ -23,15 +33,26 @@ export default function UpdatePostForm() {
       ),
   });
 
-  const { register, handleSubmit, reset } = useForm({
+  const { register, handleSubmit, reset, setValue } = useForm<Post>({
     defaultValues: {
-      title: post?.title || "",
-      body: post?.body || "",
+      title: "",
+      body: "",
+      userId: 0,
+      id: 0,
     },
   });
 
+  useEffect(() => {
+    if (post) {
+      setValue("title", post.title);
+      setValue("body", post.body);
+      setValue("userId", post.userId);
+      setValue("id", post.id);
+    }
+  }, [post, setValue]);
+
   const { mutate, isPending } = useMutation({
-    mutationFn: (updatedPost) =>
+    mutationFn: (updatedPost: Post) =>
       fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, {
         method: "PUT",
         body: JSON.stringify(updatedPost),
@@ -40,6 +61,7 @@ export default function UpdatePostForm() {
         },
       }).then((response) => response.json()),
     onSuccess: () => {
+      // queryClient.invalidateQueries(["post", id]);
       toast({
         title: "Post updated.",
         description: "Your post has been updated successfully.",
@@ -60,7 +82,7 @@ export default function UpdatePostForm() {
     },
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: Post) => {
     mutate(data);
   };
 

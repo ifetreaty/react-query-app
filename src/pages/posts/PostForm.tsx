@@ -27,6 +27,7 @@ export default function PostForm() {
     onSuccess: () => {
       toast({
         title: "Post added.",
+        position: "top-right",
         description: "Your post has been added successfully.",
         status: "success",
         duration: 5000,
@@ -37,6 +38,7 @@ export default function PostForm() {
     onError: () => {
       toast({
         title: "Error.",
+        position: "top-right",
         description: "There was an error adding your post.",
         status: "error",
         duration: 5000,

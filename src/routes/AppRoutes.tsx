@@ -9,6 +9,7 @@ import AlbumsList from "../pages/albums/AlbumList";
 import PhotosList from "../pages/photos/PhotosList";
 import TodoList from "../pages/todos/TodoList";
 import PostDetails from "../pages/posts/PostDetails";
+import PostComments from "../pages/comments/PostComments";
 
 const AppRoutes = () => {
   return (
@@ -17,6 +18,7 @@ const AppRoutes = () => {
       <Route path="/users" element={<UsersList />} />
       <Route path="/posts" element={<PostsList />} />
       <Route path="/posts/:id" element={<PostDetails />} />
+      <Route path="/posts/:postId/comments" element={<PostComments />} />
       <Route path="/add-post" element={<PostForm />} />
       <Route path="/comments" element={<CommentsList />} />
       <Route path="/albums" element={<AlbumsList />} />

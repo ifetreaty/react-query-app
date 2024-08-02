@@ -9,13 +9,23 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 
+type Post = {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
+};
+
 export default function UpdatePostForm() {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const toast = useToast();
-  const { data: post, isLoading } = useQuery({
+  // const queryClient = useQueryClient();
+
+  const { data: post, isLoading } = useQuery<Post>({
     queryKey: ["post", id],
     queryFn: () =>
       fetch(`https://jsonplaceholder.typicode.com/posts/${id}`).then((res) =>
@@ -23,15 +33,26 @@ export default function UpdatePostForm() {
       ),
   });
 
-  const { register, handleSubmit, reset } = useForm({
+  const { register, handleSubmit, reset, setValue } = useForm<Post>({
     defaultValues: {
-      title: post?.title || "",
-      body: post?.body || "",
+      title: "",
+      body: "",
+      userId: 0,
+      id: 0,
     },
   });
 
+  useEffect(() => {
+    if (post) {
+      setValue("title", post.title);
+      setValue("body", post.body);
+      setValue("userId", post.userId);
+      setValue("id", post.id);
+    }
+  }, [post, setValue]);
+
   const { mutate, isPending } = useMutation({
-    mutationFn: (updatedPost) =>
+    mutationFn: (updatedPost: Post) =>
       fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, {
         method: "PUT",
         body: JSON.stringify(updatedPost),
@@ -40,8 +61,10 @@ export default function UpdatePostForm() {
         },
       }).then((response) => response.json()),
     onSuccess: () => {
+      // queryClient.invalidateQueries(["post", id]);
       toast({
         title: "Post updated.",
+        position: "top-right",
         description: "Your post has been updated successfully.",
         status: "success",
         duration: 5000,
@@ -52,6 +75,7 @@ export default function UpdatePostForm() {
     onError: () => {
       toast({
         title: "Error.",
+        position: "top-right",
         description: "There was an error updating your post.",
         status: "error",
         duration: 5000,
@@ -60,7 +84,7 @@ export default function UpdatePostForm() {
     },
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: Post) => {
     mutate(data);
   };
 

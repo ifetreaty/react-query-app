@@ -1,12 +1,19 @@
 import { Box, Heading, Text, VStack, Spinner } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 
+type Todo = {
+  userId: number;
+  id: number;
+  title: string;
+  completed: boolean;
+};
+
 export default function TodoList() {
   const {
     data: todos,
     error,
     isLoading,
-  } = useQuery({
+  } = useQuery<Todo[]>({
     queryKey: ["todos"],
     queryFn: () =>
       fetch(`https://jsonplaceholder.typicode.com/todos`).then((res) =>
@@ -21,7 +28,7 @@ export default function TodoList() {
     <Box p={5}>
       <Heading mb={5}>Todos</Heading>
       <VStack spacing={4} align="stretch">
-        {todos.map((todo) => (
+        {todos?.map((todo) => (
           <Box key={todo.id} borderWidth="1px" borderRadius="lg" p={4}>
             <Heading size="md">{todo.title}</Heading>
             <Text>{todo.completed ? "Completed" : "Not Completed"}</Text>

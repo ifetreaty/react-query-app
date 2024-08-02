@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import UpdatePostForm from "./UpdatePostForm";
+import CreateUpdatePostForm from "./CreateUpdatePostForm";
 
 export default function PostDetails() {
   const { id } = useParams();
@@ -52,7 +52,7 @@ export default function PostDetails() {
         <Heading mb={5}>{post.title}</Heading>
         <Text>{post.body}</Text>
       </Box>
-      <UpdatePostForm />
+      <CreateUpdatePostForm />
     </Box>
   );
 }

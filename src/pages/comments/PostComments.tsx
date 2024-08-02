@@ -4,7 +4,6 @@ import {
   Text,
   VStack,
   Spinner,
-  useToast,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
@@ -13,17 +12,23 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function PostComments() {
-  const { postId } = useParams();
-  const navigate = useNavigate();
+type Comment = {
+  postId: number;
+  id: number;
+  name: string;
+  email: string;
+  body: string;
+};
 
-  const toast = useToast();
+export default function PostComments() {
+  const { postId } = useParams<{ postId: string }>();
+  const navigate = useNavigate();
 
   const {
     data: comments,
     error,
     isLoading,
-  } = useQuery({
+  } = useQuery<Comment[]>({
     queryKey: ["comments", postId],
     queryFn: () =>
       fetch(
@@ -51,7 +56,7 @@ export default function PostComments() {
       </Button>
       <Heading mb={5}>Comments</Heading>
       <VStack spacing={4} align="stretch">
-        {comments.map((comment) => (
+        {comments?.map((comment) => (
           <Box key={comment.id} borderWidth="1px" borderRadius="lg" p={4}>
             <Heading size="md">{comment.name}</Heading>
             <Text>

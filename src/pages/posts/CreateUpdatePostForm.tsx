@@ -20,7 +20,7 @@ type Post = {
   body: string;
 };
 
-export default function UpdatePostForm() {
+export default function CreateUpdatePostForm() {
   const { id } = useParams<{ id: string }>();
   const toast = useToast();
   // const queryClient = useQueryClient();
@@ -64,7 +64,6 @@ export default function UpdatePostForm() {
       // queryClient.invalidateQueries(["post", id]);
       toast({
         title: "Post updated.",
-        position: "top-right",
         description: "Your post has been updated successfully.",
         status: "success",
         duration: 5000,
@@ -75,7 +74,6 @@ export default function UpdatePostForm() {
     onError: () => {
       toast({
         title: "Error.",
-        position: "top-right",
         description: "There was an error updating your post.",
         status: "error",
         duration: 5000,

@@ -1,6 +1,5 @@
 import { Route, Routes } from "react-router-dom";
 
-import PostForm from "../pages/posts/PostForm";
 import LandingPage from "../pages/landing/LandingPage";
 import UsersList from "../pages/users/UsersList";
 import PostsList from "../pages/posts/PostsList";
@@ -19,7 +18,6 @@ const AppRoutes = () => {
       <Route path="/posts" element={<PostsList />} />
       <Route path="/posts/:id" element={<PostDetails />} />
       <Route path="/posts/:postId/comments" element={<PostComments />} />
-      <Route path="/add-post" element={<PostForm />} />
       <Route path="/comments" element={<CommentsList />} />
       <Route path="/albums" element={<AlbumsList />} />
       <Route path="/photos" element={<PhotosList />} />

@@ -11,7 +11,7 @@ import {
   Button,
   useToast,
 } from "@chakra-ui/react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { Link as RouterLink } from "react-router-dom";
 
@@ -29,7 +29,7 @@ type NewPost = {
 };
 
 export default function PostsList() {
-  // const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
   const toast = useToast();
 
   const {
@@ -39,15 +39,13 @@ export default function PostsList() {
   } = useQuery<Post[]>({
     queryKey: ["posts"],
     queryFn: () =>
-      fetch(`https://jsonplaceholder.typicode.com/posts`).then((res) =>
-        res.json()
-      ),
+      fetch(`http://localhost:5000/posts`).then((res) => res.json()),
     refetchInterval: 60000,
   });
 
   const { mutate: addPost, isPending: isPending } = useMutation({
     mutationFn: (newPost: NewPost) =>
-      fetch("https://jsonplaceholder.typicode.com/posts", {
+      fetch("http://localhost:5000/posts", {
         method: "POST",
         body: JSON.stringify(newPost),
         headers: {
@@ -55,7 +53,7 @@ export default function PostsList() {
         },
       }).then((response) => response.json()),
     onSuccess: () => {
-      // queryClient.invalidateQueries(["posts"]);
+      queryClient.invalidateQueries(["posts"]);
       toast({
         title: "Post added.",
         description: "Your post has been added successfully.",
@@ -77,11 +75,11 @@ export default function PostsList() {
 
   const { mutate: deletePost, isPending: isDeleting } = useMutation({
     mutationFn: (postId: number) =>
-      fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`, {
+      fetch(`http://localhost:5000/posts/${postId}`, {
         method: "DELETE",
       }).then((response) => response.json()),
     onSuccess: () => {
-      // queryClient.invalidateQueries(["posts"]);
+      queryClient.invalidateQueries(["posts"]);
       toast({
         title: "Post deleted.",
         description: "The post has been deleted successfully.",

@@ -28,9 +28,7 @@ export default function CreateUpdatePostForm() {
   const { data: post, isLoading } = useQuery<Post>({
     queryKey: ["post", id],
     queryFn: () =>
-      fetch(`https://jsonplaceholder.typicode.com/posts/${id}`).then((res) =>
-        res.json()
-      ),
+      fetch(`http://localhost:5000/posts/${id}`).then((res) => res.json()),
   });
 
   const { register, handleSubmit, reset, setValue } = useForm<Post>({
@@ -53,7 +51,7 @@ export default function CreateUpdatePostForm() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: (updatedPost: Post) =>
-      fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, {
+      fetch(`http://localhost:5000/posts/${id}`, {
         method: "PUT",
         body: JSON.stringify(updatedPost),
         headers: {

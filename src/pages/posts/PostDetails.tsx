@@ -22,7 +22,7 @@ export default function PostDetails() {
   } = useQuery({
     queryKey: ["post", id],
     queryFn: () =>
-      fetch(`https://jsonplaceholder.typicode.com/posts/${id}`).then((res) => {
+      fetch(`http://localhost:5000/posts/${id}`).then((res) => {
         if (!res.ok) {
           throw new Error("Network response was not ok");
         }
@@ -31,7 +31,7 @@ export default function PostDetails() {
   });
 
   if (isLoading) return <Spinner />;
-  if (error) return <Text>Error fetching post details.</Text>;
+  // if (error) return <Text>Error fetching post details.</Text>;
 
   return (
     <Box p={5} maxW="600px" mx="auto">
@@ -52,6 +52,7 @@ export default function PostDetails() {
         <Heading mb={5}>{post.title}</Heading>
         <Text>{post.body}</Text>
       </Box>
+      {error && <Text>Error fetching post details.</Text>}
       <CreateUpdatePostForm />
     </Box>
   );

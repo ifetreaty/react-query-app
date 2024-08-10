@@ -31,13 +31,13 @@ export default function PostComments() {
   } = useQuery<Comment[]>({
     queryKey: ["comments", postId],
     queryFn: () =>
-      fetch(
-        `https://jsonplaceholder.typicode.com/posts/${postId}/comments`
-      ).then((res) => res.json()),
+      fetch(`http://localhost:5000/posts/${postId}/comments`).then((res) =>
+        res.json()
+      ),
   });
 
   if (isLoading) return <Spinner />;
-  if (error) return <Text>Error fetching comments.</Text>;
+  // if (error) return <Text>Error fetching comments.</Text>;
 
   return (
     <Box p={5}>
@@ -55,6 +55,7 @@ export default function PostComments() {
         Back to Posts
       </Button>
       <Heading mb={5}>Comments</Heading>
+      {error && <Text color="red">Error fetching comments.</Text>}
       <VStack spacing={4} align="stretch">
         {comments?.map((comment) => (
           <Box key={comment.id} borderWidth="1px" borderRadius="lg" p={4}>

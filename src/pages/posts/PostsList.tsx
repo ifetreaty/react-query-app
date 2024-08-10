@@ -10,8 +10,11 @@ import {
   Textarea,
   Button,
   useToast,
+  FormErrorMessage,
+  HStack,
 } from "@chakra-ui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link as RouterLink } from "react-router-dom";
 
@@ -31,17 +34,38 @@ type NewPost = {
 export default function PostsList() {
   const queryClient = useQueryClient();
   const toast = useToast();
+  const [page, setPage] = useState(1);
+  const limit = 10;
 
   const {
     data: posts,
     error,
     isLoading,
   } = useQuery<Post[]>({
-    queryKey: ["posts"],
+    queryKey: ["posts", page],
     queryFn: () =>
-      fetch(`http://localhost:5000/posts`).then((res) => res.json()),
+      fetch(`http://localhost:5000/posts?_limit=${limit}&_page=${page}`).then(
+        (res) => res.json()
+      ),
     refetchInterval: 60000,
   });
+
+  //   queryFn: async () => {
+  //     const res = await fetch(
+  //       `http://localhost:5000/posts?_limit=${limit}&_page=${page}`
+  //     );
+  //     const totalCount = parseInt(res.headers.get("X-Total-Count") || "0", 10);
+  //     setTotalItems(totalCount);
+  //     return res.json();
+  //   },
+  //   keepPreviousData: true,
+  // });
+
+  // console.log("posts: ", posts);
+  // console.log("count: ", posts?.length);
+  // console.log("total: ", totalItems);
+
+  // const isLastPage = posts?.length < limit || page * limit >= totalItems;
 
   const { mutate: addPost, isPending: isPending } = useMutation({
     mutationFn: (newPost: NewPost) =>
@@ -99,7 +123,12 @@ export default function PostsList() {
     },
   });
 
-  const { register, handleSubmit, reset } = useForm<NewPost>();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<NewPost>();
 
   const onSubmit = (data: NewPost) => {
     addPost(data);
@@ -107,7 +136,7 @@ export default function PostsList() {
   };
 
   if (isLoading) return <Spinner />;
-  if (error) return <Text>Error fetching posts.</Text>;
+  if (error) return <Text color="red">Error fetching posts.</Text>;
 
   return (
     <Box p={5}>
@@ -117,7 +146,7 @@ export default function PostsList() {
       </Text>
       <Box mb="6rem" p={5} borderWidth="1px" borderRadius="lg">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <FormControl mb={4}>
+          <FormControl mb={4} isInvalid={!!errors.title}>
             <FormLabel>Title</FormLabel>
             <Input
               placeholder="Post title"
@@ -129,9 +158,12 @@ export default function PostsList() {
                 },
               })}
             />
+            <FormErrorMessage>
+              {errors.title && errors.title.message}
+            </FormErrorMessage>
           </FormControl>
 
-          <FormControl mb={4}>
+          <FormControl mb={4} isInvalid={!!errors.body}>
             <FormLabel>Body</FormLabel>
             <Textarea
               placeholder="Post body"
@@ -143,9 +175,16 @@ export default function PostsList() {
                 },
               })}
             />
+            <FormErrorMessage>
+              {errors.body && errors.body.message}
+            </FormErrorMessage>
           </FormControl>
 
-          <Button type="submit" colorScheme="teal" isLoading={isPending}>
+          <Button
+            type="submit"
+            colorScheme="teal"
+            isLoading={isPending || isSubmitting}
+          >
             Add Post
           </Button>
         </form>
@@ -153,6 +192,7 @@ export default function PostsList() {
       <Text fontWeight={700} fontSize="20px" mb={4}>
         View All Posts
       </Text>
+      {error && <Text>Error fetching Posts.</Text>}
       <VStack spacing={4} align="stretch">
         {posts?.map((post) => (
           <Box key={post.id} borderWidth="1px" borderRadius="lg" p={4}>
@@ -180,6 +220,16 @@ export default function PostsList() {
           </Box>
         ))}
       </VStack>
+      <HStack mt={5} spacing={5} justify="center">
+        <Button
+          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+          isDisabled={page === 1}
+        >
+          Previous
+        </Button>
+        <Text>Page {page}</Text>
+        <Button onClick={() => setPage((prev) => prev + 1)}>Next</Button>
+      </HStack>
     </Box>
   );
 }

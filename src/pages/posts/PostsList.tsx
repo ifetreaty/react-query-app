@@ -77,7 +77,7 @@ export default function PostsList() {
         },
       }).then((response) => response.json()),
     onSuccess: () => {
-      queryClient.invalidateQueries(["posts"]);
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
       toast({
         title: "Post added.",
         description: "Your post has been added successfully.",
@@ -103,7 +103,7 @@ export default function PostsList() {
         method: "DELETE",
       }).then((response) => response.json()),
     onSuccess: () => {
-      queryClient.invalidateQueries(["posts"]);
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
       toast({
         title: "Post deleted.",
         description: "The post has been deleted successfully.",

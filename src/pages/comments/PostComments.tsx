@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
-
+import React  from "react";
 type Comment = {
   postId: number;
   id: number;

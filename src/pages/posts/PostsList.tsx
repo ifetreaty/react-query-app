@@ -17,7 +17,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link as RouterLink } from "react-router-dom";
-
+import React  from "react";
 type Post = {
   userId: number;
   id: number;

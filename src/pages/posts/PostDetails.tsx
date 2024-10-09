@@ -11,7 +11,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import CreateUpdatePostForm from "./CreateUpdatePostForm";
-
+import React  from "react";
 export default function PostDetails() {
   const { id } = useParams();
   const navigate = useNavigate();

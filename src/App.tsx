@@ -4,6 +4,7 @@ import AppHeader from "./components/AppHeader";
 import AppSidebar from "./components/AppSidebar";
 import theme from "./theme";
 import AppRoutes from "./routes/AppRoutes";
+import React from 'react'
 
 const App = () => {
   return (

@@ -1,6 +1,6 @@
 import { Box, Heading, Text, Stack, VStack, Spinner } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
-
+import React  from "react";
 type User = {
   id: number;
   name: string;

@@ -17,7 +17,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link as RouterLink } from "react-router-dom";
-import React  from "react";
+import React from "react";
 type Post = {
   userId: number;
   id: number;
@@ -233,3 +233,16 @@ export default function PostsList() {
     </Box>
   );
 }
+
+// write about all the performance optimizations that your bundler can help you with
+// - e.g tree shaking and code splitting (include others if you find)
+
+//
+
+// unit test is independent testing of a small module, or function
+// integration test is
+
+// Figure out which unit test library you want to use - set it up so it works (read the documentation)
+// Test all your components independently
+
+// DO E2E tests for each component (e.g the Post page, etc)

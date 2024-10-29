@@ -9,12 +9,8 @@ import replace from "@rollup/plugin-replace";
 
 import postcss from "rollup-plugin-postcss";
 
-
-
 // eslint-disable-next-line no-undef
 const isProd = process.env.NODE_ENV === "production";
-
-
 
 export default {
   input: "src/main.tsx",
@@ -56,6 +52,6 @@ export default {
         contentBase: ["."],
         port: 3000,
       }),
-      !isProd && livereload("."),
+    !isProd && livereload("."),
   ],
 };

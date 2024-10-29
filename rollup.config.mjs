@@ -39,7 +39,7 @@ export default {
       presets: ["@babel/preset-react", "@babel/preset-typescript"],
     }),
     typescript({
-      tsconfig: "./tsconfig.app.json",
+      tsconfig: "./tsconfig.json",
       sourceMap: true,
     }),
     postcss({

@@ -14,10 +14,11 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+
+import React from "react";
 import { useForm } from "react-hook-form";
 import { Link as RouterLink } from "react-router-dom";
-import React from "react";
+
 type Post = {
   userId: number;
   id: number;
@@ -34,7 +35,7 @@ type NewPost = {
 export default function PostsList() {
   const queryClient = useQueryClient();
   const toast = useToast();
-  const [page, setPage] = useState(1);
+  const [page, setPage] = React.useState(1);
   const limit = 10;
 
   const {

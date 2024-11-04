@@ -1,12 +1,11 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import {
   QueryClient,
   QueryClientProvider,
   useQuery,
 } from "@tanstack/react-query";
-import userEvent from "@testing-library/user-event";
 import PostsList from "./PostsList";
 
 const queryClient = new QueryClient();
@@ -19,7 +18,7 @@ const renderWithClient = (ui: React.ReactElement) => {
 
 jest.mock("@tanstack/react-query", () => ({
   ...jest.requireActual("@tanstack/react-query"),
-  useQuery: jest.fn(),
+  useQuery: jest.fn().mockReturnValue({}),
   useMutation: jest.fn().mockReturnValue({
     mutate: jest.fn(),
   }),
@@ -40,28 +39,28 @@ describe("PostsList Component", () => {
     expect(screen.getByText(/View All Posts/i)).toBeInTheDocument();
   });
 
-  // // Test 2: Loading state
-  // test("shows loading spinner while fetching posts", () => {
-  //   (useQuery as jest.Mock).mockReturnValue({ isLoading: true });
-  //   renderWithClient(<PostsList />);
-  //   expect(screen.getByRole("status")).toBeInTheDocument(); // Assuming the Spinner has a role of 'status'
-  // });
+  // Test 2: Loading state
+  test("shows loading spinner while fetching posts", () => {
+    (useQuery as jest.Mock).mockReturnValue({ isLoading: true });
+    renderWithClient(<PostsList />);
+    expect(screen.getByTestId("posts-spinner")).toBeInTheDocument(); // Assuming the Spinner has a role of 'status'
+  });
 
-  // // Test 3: Successful data fetching
-  // test("displays fetched posts", async () => {
-  //   (useQuery as jest.Mock).mockReturnValue({
-  //     data: [
-  //       { id: 1, title: "Post 1", body: "Body of post 1" },
-  //       { id: 2, title: "Post 2", body: "Body of post 2" },
-  //     ],
-  //     isLoading: false,
-  //     error: null,
-  //   });
+  // Test 3: Successful data fetching
+  test("displays fetched posts", async () => {
+    (useQuery as jest.Mock).mockReturnValue({
+      data: [
+        { id: 1, title: "Post 1", body: "Body of post 1" },
+        { id: 2, title: "Post 2", body: "Body of post 2" },
+      ],
+      isLoading: false,
+      error: null,
+    });
 
-  //   renderWithClient(<PostsList />);
-  //   expect(await screen.findByText(/Post 1/i)).toBeInTheDocument();
-  //   expect(screen.getByText(/Post 2/i)).toBeInTheDocument();
-  // });
+    renderWithClient(<PostsList />);
+    expect(await screen.findByText(/Post 1/i)).toBeInTheDocument();
+    expect(screen.getByText(/Post 2/i)).toBeInTheDocument();
+  });
 
   // // Test 4: Form submission to add a new post
   // test("adds a new post on form submission", async () => {

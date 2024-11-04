@@ -136,7 +136,7 @@ export default function PostsList() {
     reset();
   };
 
-  if (isLoading) return <Spinner />;
+  if (isLoading) return <Spinner data-testId="posts-spinner" />;
   if (error) return <Text color="red">Error fetching posts.</Text>;
 
   return (
